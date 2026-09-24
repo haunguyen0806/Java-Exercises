@@ -1,35 +1,62 @@
 import java.util.Scanner;
 
 public class BaiTap1 {
-    public static double tinhThue(double thuNhap) {
-        double thue = 0;
-        
-        if (thuNhap <= 5) {
-            thue = thuNhap * 0.05;
-        } else if (thuNhap <= 10) {
-            thue = 5 * 0.05 + (thuNhap - 5) * 0.10;
-        } else if (thuNhap <= 18) {
-            thue = 5 * 0.05 + 5 * 0.10 + (thuNhap - 10) * 0.15;
-        } else if (thuNhap <= 32) {
-            thue = 5 * 0.05 + 5 * 0.10 + 8 * 0.15 + (thuNhap - 18) * 0.20;
-        } else if (thuNhap <= 52) {
-            thue = 5 * 0.05 + 5 * 0.10 + 8 * 0.15 + 14 * 0.20 + (thuNhap - 32) * 0.25;
-        } else if (thuNhap <= 80) {
-            thue = 5 * 0.05 + 5 * 0.10 + 8 * 0.15 + 14 * 0.20 + 20 * 0.25 + (thuNhap - 52) * 0.30;
-        } else {
-            thue = 5 * 0.05 + 5 * 0.10 + 8 * 0.15 + 14 * 0.20 + 20 * 0.25 + 28 * 0.30 + (thuNhap - 80) * 0.35;
-        }
-        
-        return thue;
-    }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Nhap thu nhap hang nam (trieu dong): ");
-        double thuNhap = scanner.nextDouble();
-        
-        double tongThue = tinhThue(thuNhap);
-        System.out.println("So thue phai tra: " + tongThue + " trieu dong");
+
+        System.out.print("Nhap thu nhap hang nam (dong): ");
+        long thuNhap = scanner.nextLong();
+
+        if (thuNhap < 0) {
+            System.out.println("Thu nhap khong duoc am.");
+            scanner.close();
+            return;
+        }
+
+        long[] gioiHanTren = {
+            5_000_000L,
+            10_000_000L,
+            18_000_000L,
+            32_000_000L,
+            52_000_000L,
+            80_000_000L,
+            Long.MAX_VALUE
+        };
+
+        double[] thueSuat = {
+            0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35
+        };
+
+        long gioiHanDuoi = 0;
+        double tongThue = 0;
+
+        System.out.println("Thue theo tung muc:");
+
+        for (int i = 0; i < gioiHanTren.length; i++) {
+            if (thuNhap <= gioiHanDuoi) {
+                break;
+            }
+
+            long thuNhapTrongMuc =
+                Math.min(thuNhap, gioiHanTren[i]) - gioiHanDuoi;
+
+            double thueTrongMuc = thuNhapTrongMuc * thueSuat[i];
+            tongThue += thueTrongMuc;
+
+            System.out.printf(
+                "Muc %d (%.0f%%): %,d dong x %.0f%% = %,.0f dong%n",
+                i + 1,
+                thueSuat[i] * 100,
+                thuNhapTrongMuc,
+                thueSuat[i] * 100,
+                thueTrongMuc
+            );
+
+            gioiHanDuoi = gioiHanTren[i];
+        }
+
+        System.out.printf("Tong thue phai tra: %,.0f dong%n", tongThue);
+
         scanner.close();
     }
 }
